@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>oblig 2 </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Bestilling av kjinobiletter</h3>
+            <form class="form">
+                <div class="groupe-form">
+                    <label for="film">velg film</label>
+                    <select id="film">
+                        <option>film1</option>
+                        <option>film2</option>
+                        <option>film3</option>
+                    </select>
+                </div>
+                <div class="groupe-form">
+                    <label for="antal">Antal</label>
+                    <input type="number" class="form-control" id="antal">
+                    <div id="rean"></div>
+                </div>
+                <div class="groupe-form">
+                    <label for="fornavn">Fornavn</label>
+                    <input type="text"  class="form-control" id="fornavn">
+                    <div id="refo"></div>
+                </div>
+                <div class="groupe-form">
+                    <label for="etternavn">Etternavn</label>
+                    <input type="text"  class="form-control" id="etternavn">
+                    <div id="reet"></div>
+                </div>
+                <div class="groupe-form">
+                    <label for="tel">Telefonnr</label>
+                    <input type="text" class="form-control"  id="tel">
+                    <div id="rete"></div>
+                </div>
+                <div class="groupe-form">
+                    <label for="epost">Epost</label>
+                    <input type="text"  class="form-control" id="epost">
+                    <div id="reep"></div>
+                </div>
+            </form>
+            <br>
+            <button onclick="kjop()" class="btn btn-primary">kjop billet</button>
+        </div>
+        <div class="col-md-8">
+            <h3>Alle billetter</h3>
+            <div id="res"></div>
+            <button onclick="slett()" class="btn btn-danger">slett alle billettene</button>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    function kjop() {
+        if ($("#antal").val() === "") {
+
+            $("#rean").html("Du må skrive noe her");
+        }
+        if ($("#fornavn").val() === "") {
+
+
+            $("#refo").html("Du må skrive noe her")
+        }
+        if ($("#etternavn ").val()=== "") {
+
+            $("#reet").html("Du må skrive noe her")
+        }
+        if ( $("#tel").val() === "") {
+
+            $("#rete").html("Du må skrive noe her")
+        }
+        if ( $("#epost").val() === "") {
+
+            $("#reep").html("Du må skrive noe her")
+        }
+
+        const kunde = {
+            antal: $("#antal").val(),
+            fornavn: $("#fornavn").val(),
+            etternavn: $("#etternavn").val(),
+            tel: $("#tel").val(),
+            epost: $("#epost").val()
+
+        }
+        $.post("/lagre", kunde, function () {
+            hentalle()
+        });
+    }
+    function hentalle(){
+        $.get("/hente",function (data){
+            formaterData(data);
+        })
+    }
+    function formaterData(kunder){
+        let ut="<table><tr><th>"+"  Antal  "+"  </th><th> "+"  Fornavn  "+" </th><th> "+"  Etternevn  "+" </th><th> "+" telefonnr "+" </th><th> "+" Epost "+"</th></tr>";
+        for(let enkunde of kunder){
+            ut+="<tr><td>"+enkunde.antal+"</td><td>"+enkunde.fornavn+"</td><td>"+enkunde.etternavn+"</td><td>"+enkunde.tel+"</td><td>"+enkunde.epost+"</td></tr>";
+        }
+        ut+="</table>";
+        $("#res").html(ut);
+    }
+    function slett(){
+        $.get("/slett",function (){
+            hentalle();
+        })
+    }
+</script>
+</body>
+</html>
